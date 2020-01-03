@@ -10,4 +10,6 @@ public class Point {
         x = xx;
         y = yy;
     }
+
+
 }

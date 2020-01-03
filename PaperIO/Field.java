@@ -12,11 +12,13 @@ public class Field {
     public Color[] color;
     public ArrayList<Point> head;
     public ArrayList<LinkedList<Point>> area;
-    public ArrayList<LinkedList<Point>> tail;
+    public ArrayList<Point> tail;
     public JFrame frame;
+    public int step;
 
     public Field() {
 
+        step = 20;
         init();
         setColors();
         frame = new JFrame("Paper.io");
@@ -38,22 +40,27 @@ public class Field {
         frame.add(new Change());
     }
 
-    public void getChanges(Point h1, Point h2, LinkedList<Point> a1, LinkedList<Point> a2, LinkedList<Point> t1, LinkedList<Point> t2){
-        head.set(0, h1);
-        head.set(1, h2);
-        area.set(0, a1);
-        area.set(1, a2);
-        tail.set(0, t1);
-        tail.set(1, t2);
+    public void getChanges(Changes one, Changes two){
+        head.set(0, one.head);
+        head.set(1, two.head);
+        area.set(0, one.area);
+        area.set(1, two.area);
+        tail.set(0, one.tail);
+        tail.set(1, two.tail);
     }
 
     public void init(){
-        head.add(new Point());
-        head.add(new Point());
+        head = new ArrayList<Point>();
+        head.add(new Point(-1, -1));
+        head.add(new Point(-1, -1 ));
+        area = new ArrayList<LinkedList<Point>>();
         area.add(new LinkedList<Point>());
+        area.get(0).add(new Point(-1, -1));
         area.add(new LinkedList<Point>());
-        tail.add(new LinkedList<Point>());
-        tail.add(new LinkedList<Point>());
+        area.get(1).add(new Point(-1, -1));
+        tail = new ArrayList<Point>();
+        tail.add(new Point(-1, -1));
+        tail.add(new Point(-1, -1));
     }
     public void setColors(){
         color = new Color[6];
@@ -65,7 +72,7 @@ public class Field {
         color[5] = new Color(249, 80, 80);
     }
 
-    public class Change extends JComponent{
+    /*public class Change extends JComponent{
         @Override
         public void paint(Graphics g1) {
             Graphics2D g = (Graphics2D)g1;
@@ -102,6 +109,62 @@ public class Field {
                         g.fill(r);
                         g.draw(r);
                     }
+                }
+            }
+
+        }
+
+    }*/
+
+
+
+    public class Change extends JComponent{
+        @Override
+        public void paint(Graphics g1) {
+            Graphics2D g = (Graphics2D)g1;
+            int i = 0;
+
+            //Graphics g1;
+            //Graphics2D g = (Graphics2D)g1;
+            Rectangle2D rr = new Rectangle2D.Double(0, 0, 20, 20);
+            g.setPaint(Color.red);
+            g.fill(rr);
+            g.draw(rr);
+
+            for (i = 0; i < 2; i++) {
+                if (!area.get(i).isEmpty()) {
+                    ListIterator<Point> it = area.get(i).listIterator();
+                    while (it.hasNext()) {
+                        Point p = new Point();
+                        p = (it.next());
+                        Rectangle2D r = new Rectangle2D.Double(step * p.x, step * p.y, step, step);
+                        g.setPaint(color[1 + i * 3]);
+                        g.fill(r);
+                        g.draw(r);
+                    }
+                }
+            }
+
+            for (i = 0; i < 2; i++) {
+                if (tail.get(i).x >= 0) {
+
+                        //Point p = new Point();
+                        //p = point;
+                        Rectangle2D r = new Rectangle2D.Double(step * tail.get(i).x, step * tail.get(i).y, step, step);
+                        g.setPaint(color[2 + i * 3]);
+                        g.fill(r);
+                        g.draw(r);
+
+                }
+            }
+
+            for (i = 0; i < 2; i++) {
+                if (head.get(i).x >= 0) {
+                    Rectangle2D r = new Rectangle2D.Double(step * head.get(i).x, step * head.get(i).y, step, step);
+                    // g.setPaint(Color.getHSBColor(0, 204, 0));
+                    g.setPaint(color[i * 3]);
+                    g.fill(r);
+                    g.draw(r);
                 }
             }
 
